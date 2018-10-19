@@ -19,12 +19,37 @@ func TestAddHandler(t *testing.T) {
 
 	err := e.AddCommand("test", "help", h, 0)
 	if err != nil {
-		t.Errorf("AddCommand() failed")
+		t.Errorf("AddCommand() failed: %v", err)
 	}
 
 	err = e.AddCommand("test", "help", h, 0)
 	if err == nil {
 		t.Errorf("Duplicate AddCommand() succeeded")
+	}
+}
+
+func TestRemoveHandler(t *testing.T) {
+	e := NewEngine()
+	h := func(ctx interface{}, args []string) error { return nil }
+
+	err := e.RemoveCommand("test")
+	if err == nil {
+		t.Errorf("Expected error when removing non-existant command")
+	}
+
+	err = e.AddCommand("test", "help", h, 0)
+	if err != nil {
+		t.Errorf("AddCommand() failed: %v", err)
+	}
+
+	err = e.RemoveCommand("test")
+	if err != nil {
+		t.Errorf("RemoveCommand() failed: %v", err)
+	}
+
+	err = e.ExecString(nil, 10, "test")
+	if err == nil {
+		t.Errorf("Expected error when executing non-existant command")
 	}
 }
 

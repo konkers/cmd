@@ -44,6 +44,16 @@ func (e *Engine) AddCommand(name string, help string, handler Handler, userLevel
 	return nil
 }
 
+// RemoveCommand removes a command from the engine.
+func (e *Engine) RemoveCommand(name string) error {
+	if _, ok := e.commands[name]; !ok {
+		return fmt.Errorf("command \"%s\" not registered", name)
+	}
+
+	delete(e.commands, name)
+	return nil
+}
+
 // Exec executes a command.
 func (e *Engine) Exec(ctx interface{}, userLevel int, args []string) error {
 	if len(args) < 1 {
